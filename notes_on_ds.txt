@@ -1,0 +1,78 @@
+Medicare beneficiaries with a Part D prescription drug plan.
+> Read more here: https://www.ehealthmedicare.com/medicare-part-d-articles/medicare-part-d/
+
+
+- All claims including provider between 2013-2016
+
+Population
+- Data beneficiaries are ~70% of all Medicare beneficiaries
+
+######VALIDATE
+TODO Validate that each of your randomly chosen data sets has the correct distributions of these
+######
+- 2/3 beneficiaries in stand-alone Prescription Drug Plans (PDP) 
+- 1/3 beneficiaries enrolled in Medicare Advantage Prescription Drug (MAPD) plans.
+
+
+######CLEAN
+TODO Remove non-individual provider info.  
+######
+If you do apply to Medicare with your Type II NPI, you can file Medicare claims with that information once you’re approved and contracted. Continue to file claims with private payers using your Type I NPI.
+https://www.healthybytes.co/nutrition-billing/2017/npi-types
+
+nppes_provider_first_name – When the provider is registered in NPPES as an individual
+(nppes_entity_code = “I”), this is the provider’s first name. When the provider is registered as an
+organization (nppes_entity_code = “O”), this will be blank
+
+The dataset contains information predominantly from individual providers, but also includes a small proportion of
+organizational providers, such as nursing homes, group practices, non-physician practitioners,
+residential treatment facilities, ambulatory surgery centers, and other providers.
+
+
+
+####VALIDATE
+Could there be a bias in being able to predict some types of specialties since they don't have enough claims data?
+####
+To protect the privacy of Medicare beneficiaries, any aggregated records which are derived from 10 or fewer claims are excluded from the Part D Prescriber PUF
+
+
+
+
+####VALIDATE
+Will certain specialties just show up less then?
+####
+Specialty = code associated with the largest number of services is reported
+If taximony code, try to map it
+
+
+####FEATURE
+TODO For generic_name and NPI, aggregate the following:
+- convert city + state to ZIPCODE
+- bene_count (Avg)
+    > The total number of unique Medicare Part D beneficiaries with at least one claim for the drug.
+    > if less than 11, maybe make 5?
+    ~ How many people are you treating?
+- total_claim_count (Avg)
+    > Not convinced this is useful but maybe?
+- total_30_day_fill_count (Avg)
+    > # of patients with standardized 30-day fills
+- total_day_supply (Avg)
+- total_drug_cost (Avg)
+- bene_count_ge65
+    > if bene_count_ge65_suppress_flag = “*”
+        set to 5
+    > if bene_count_ge65_suppress_flag = “#”
+        set to bene_count - 5
+    > ow bene_count_ge65
+- total_claim_count_ge65, total_30_day_fill_count_ge65, total_day_supply_ge65, total_drug_cost_ge65
+    > USE FLAG
+####
+For each drug assign it a category & create 5 features:
+- the total number of prescriptions that were dispensed (including original prescriptions and any refills)
+- total 30-day standardized fill counts
+- total day’s supply for these prescriptions
+- the total drug cost. 
+
+####LABELS
+TODO Convert labels to be specialty_description + description_flag
+####
